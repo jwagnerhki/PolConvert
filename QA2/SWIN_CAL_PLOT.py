@@ -70,7 +70,10 @@ Argument list:
               (in principle, AX and/or LM should suffice
               for a quick assessment of the polconversion).
               Default is all antennas available.
- 
+
+--noEHT :: If present, the naming assumptions for the EHT are not used. In this case,
+           the "--bands" option will not work.
+
 
 EXAMPLE:
 
@@ -91,7 +94,7 @@ if len(sys.argv)==1:
    print(helptxt)
    os._exit(0)
 
-allOptions = ['--nproc','--datadir','--plotdir','--source','--bands','--refant','--antennas']
+allOptions = ['--nproc','--datadir','--plotdir','--source','--bands','--refant','--antennas','--noEHT']
 for arg in sys.argv:
     if arg.startswith('-') and arg not in allOptions:
         raise Exception("Unknown argument %s"%arg)
@@ -100,6 +103,7 @@ for arg in sys.argv:
 ##################################
 ## Read command-line arguments:
 
+noEHT = "--noEHT" in sys.argv
 
 if '--datadir' in sys.argv:
    DIR = sys.argv[sys.argv.index('--datadir')+1]
@@ -133,7 +137,9 @@ else:
 
 
 BANDS = []
-if '--bands' in sys.argv:
+if noEHT:
+   BANDS = [0]
+elif '--bands' in sys.argv:
    i0 = sys.argv.index('--bands')
    i1 = -1
    for k in range(i0+1,len(sys.argv)):
@@ -201,7 +207,10 @@ for BAND in BANDS:
  print("\n Processing band %i"%BAND)
 
 ## Look for the scans:
- allScans = glob.glob(os.path.join(DIR,"*b%s_*.calc"%BAND))
+ if noEHT:
+    allScans = glob.glob(os.path.join(DIR,"*_[0-9]*.calc"))
+ else:
+    allScans = glob.glob(os.path.join(DIR,"*b%s_*.calc"%BAND))
  SCAN = [] ; SCANNAMES = []
  for scan in allScans:
    infi = open(scan,"r")
