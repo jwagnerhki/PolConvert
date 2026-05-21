@@ -710,12 +710,12 @@ def polconvert(
 
             ## Get channel frequencies for non-ALMA:
             if not usingALMA:
-              if nu in doIF:
+              if (nu+1) in doIF:
                 IFchan = max([IFchan, int(nchan / chav)])
                 if float(nchan // chav) != float(nchan / chav):
-                   printMsg("SPW %i. linspace check chan FAILED: %d / %d = %f"%(nu,nchan, chav, float(nchan / chav)))
+                   printMsg("SPW %i DiFX %i. linspace check chan FAILED: %d / %d = %f"%(nu+1, nu, nchan, chav, float(nchan / chav)))
                 else:
-                   printMsg("SPW %i. linspace check chan PASSED: %d / %d = %f"%(nu,nchan, chav, float(nchan / chav)))
+                   printMsg("SPW %i DiFX %i. linspace check chan PASSED: %d / %d = %f"%(nu+1, nu, nchan, chav, float(nchan / chav)))
               freqs = (nu0 + np.linspace((sb-1.0)/2.0, (sb+1.0)/2.0, nchan//chav, endpoint=False)*bw)*1.0e6
 
             # Get them for ALMA (add a half-channel frequency shift to match exactly to the CASA-calibration gains:
